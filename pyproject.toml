@@ -1,6 +1,6 @@
 
 [project]
-name = "laiss_resspect_classifier"
+name = "laiss-resspect-classifier"
 license = {file = "LICENSE"}
 readme = "README.md"
 authors = [
@@ -20,7 +20,7 @@ dependencies = [
 ]
 
 [project.urls]
-"Source Code" = "https://github.com/lincc-frameworks/laiss_resspect_classifier"
+"Source Code" = "https://github.com/lincc-frameworks/laiss-resspect-classifier"
 
 # On a mac, install optional dependencies with `pip install '.[dev]'` (include the single quotes)
 [project.optional-dependencies]
