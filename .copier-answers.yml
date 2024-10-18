@@ -13,7 +13,7 @@ include_notebooks: true
 mypy_type_checking: none
 package_name: laiss_resspect_classifier
 project_license: MIT
-project_name: laiss_resspect_classifier
+project_name: laiss-resspect-classifier
 project_organization: lincc-frameworks
 python_versions:
 - '3.9'

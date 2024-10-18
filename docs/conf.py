@@ -14,10 +14,10 @@ sys.path.insert(0, os.path.abspath("../src/"))
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
-project = "laiss_resspect_classifier"
+project = "laiss-resspect-classifier"
 copyright = "2024, Haille Perkins"
 author = "Haille Perkins"
-release = version("laiss_resspect_classifier")
+release = version("laiss-resspect-classifier")
 # for example take major/minor
 version = ".".join(release.split(".")[:2])
 
