@@ -1,7 +1,7 @@
 import itertools
 import numpy as np
 
-from resspect.feature_extractors import LightCurve
+from resspect.feature_extractors.light_curve import LightCurve
 
 class LaissFeatureExtractor(LightCurve):
     # these features were previously used with ZTF bands [r,g].
@@ -20,7 +20,7 @@ class LaissFeatureExtractor(LightCurve):
         'feature_linear_fit_slope_sigma_magn_*',
         'feature_magnitude_percentage_ratio_40_5_magn_*',
         'feature_magnitude_percentage_ratio_20_5_magn_*',
-        'feature_mean_magn_',
+        'feature_mean_magn_*',
         'feature_median_absolute_deviation_magn_*',
         'feature_percent_amplitude_magn_*',
         'feature_median_buffer_range_percentage_10_magn_*',
@@ -69,7 +69,12 @@ class LaissFeatureExtractor(LightCurve):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
-    def get_features(self, filters: list) -> list[str]:
+    @classmethod
+    def get_metadata_header(cls) -> list[str]:
+        return ["ztf_object_id"]
+
+    @classmethod
+    def get_features(cls, filters: list) -> list[str]:
         """Produce the full list of feature names for the given filters.
 
         Parameters
@@ -84,12 +89,12 @@ class LaissFeatureExtractor(LightCurve):
             other features that don't depend on the filter.
         """
         features = []
-        features.extend(self._get_features_per_filter(self.feature_names, filters))
+        features.extend(cls._get_features_per_filter(cls.feature_names, filters))
 
-        LSST_filters = ['u', 'g', 'r', 'i', 'z', 'y']
-        features.extend(self._get_features_per_filter(self.other_feature_names, LSST_filters))
+        LSST_filters = ['g', 'r', 'i', 'z', 'y']
+        features.extend(cls._get_features_per_filter(cls.other_feature_names, LSST_filters))
 
-        features.extend(self.yet_more_feature_names)
+        features.extend(cls.yet_more_feature_names)
 
         return features
 
@@ -99,7 +104,8 @@ class LaissFeatureExtractor(LightCurve):
     def fit_all(self) -> np.ndarray:
         pass
 
-    def _get_features_per_filter(self, features: list, filters: list) -> list[str]:
+    @classmethod
+    def _get_features_per_filter(cls, features: list, filters: list) -> list[str]:
         """Simple function to get all possible combinations of features and filters.
         Will replace the '*' in the feature name with the filter name.
 
