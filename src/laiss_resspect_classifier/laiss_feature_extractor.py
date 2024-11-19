@@ -48,7 +48,7 @@ class LaissFeatureExtractor(LightCurve):
     ]
 
     id_column = "ztf_object_id"
-    label_column = "ideal_label" #! Better variable name?
+    label_column = "ideal_label"
     non_anomaly_classes = ["Normal", "AGN"]
 
     def __init__(self, **kwargs):
