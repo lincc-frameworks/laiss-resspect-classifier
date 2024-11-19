@@ -4,8 +4,6 @@ import numpy as np
 from resspect.feature_extractors.light_curve import LightCurve
 
 class LaissFeatureExtractor(LightCurve):
-    # these features were previously used with ZTF bands [r,g].
-    #! But they don't have to be presumably???
     feature_names = [
         'feature_amplitude_magn_*',
         'feature_anderson_darling_normal_magn_*',
@@ -40,24 +38,7 @@ class LaissFeatureExtractor(LightCurve):
         'feature_stetson_k_flux_*'
     ]
 
-    # these are galaxy features are used with the LSST bands [u,g,r,i,z,y]
-    other_feature_names = [
-        '*momentXX',
-        '*momentXY',
-        '*momentYY',
-        '*momentR1',
-        '*momentRH',
-        '*PSFFlux',
-        '*ApFlux',
-        '*KronFlux',
-        '*KronRad',
-        '*ExtNSigma',
-        '*ApMag_*KronMag', #! Confirm with Haille that this is correct
-        '*ApMag_*KronMag', #! Confirm with Haille that this is correct
-        '*ApMag_*KronMag', #! Confirm with Haille that this is correct
-        '*ApMag_*KronMag', #! Confirm with Haille that this is correct
-        '*ApMag_*KronMag', #! Confirm with Haille that this is correct
-    ]
+    other_feature_names = []
 
     # these features don't seem to be related to bands
     yet_more_feature_names = [
@@ -66,12 +47,16 @@ class LaissFeatureExtractor(LightCurve):
         'dist/DLR'
     ]
 
+    id_column = "ztf_object_id"
+    label_column = "ideal_label" #! Different name?
+    non_anomaly_classes = ["Normal", "AGN"]
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
     @classmethod
     def get_metadata_header(cls) -> list[str]:
-        return ["ztf_object_id"]
+        return [cls.id_column, "obs_num", "mjd_cutoff", cls.label_column]
 
     @classmethod
     def get_features(cls, filters: list) -> list[str]:
