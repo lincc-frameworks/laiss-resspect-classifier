@@ -48,15 +48,16 @@ class LaissFeatureExtractor(LightCurve):
     ]
 
     id_column = "ztf_object_id"
-    label_column = "ideal_label" #! Different name?
+    label_column = "ideal_label" #! Better variable name?
     non_anomaly_classes = ["Normal", "AGN"]
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
     @classmethod
-    def get_metadata_header(cls) -> list[str]:
-        return [cls.id_column, "obs_num", "mjd_cutoff", cls.label_column]
+    def get_metadata_header(cls, **kwargs) -> list[str]:
+        kwargs['override_primary_columns'] = [cls.id_column, "obs_num", "mjd_cutoff", cls.label_column]
+        return super().get_metadata_header(**kwargs)
 
     @classmethod
     def get_features(cls, filters: list) -> list[str]:

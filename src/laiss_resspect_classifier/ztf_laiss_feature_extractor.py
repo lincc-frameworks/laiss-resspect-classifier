@@ -27,5 +27,6 @@ class ZtfLaissFeatureExtractor(LaissFeatureExtractor):
         super().__init__(**kwargs)
 
     @classmethod
-    def get_metadata_header(cls) -> list[str]:
-        return [cls.id_column, "obs_num", "mjd_cutoff", cls.label_column]
+    def get_metadata_header(cls, **kwargs) -> list[str]:
+        kwargs['override_primary_columns'] = [cls.id_column, "obs_num", "mjd_cutoff", cls.label_column]
+        return super().get_metadata_header(**kwargs)
