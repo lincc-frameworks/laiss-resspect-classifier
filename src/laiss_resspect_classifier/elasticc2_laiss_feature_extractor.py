@@ -7,7 +7,7 @@ from laiss_resspect_classifier.laiss_feature_extractor import LaissFeatureExtrac
 
 class Elasticc2LaissFeatureExtractor(LaissFeatureExtractor):
 
-    other_feature_names = [
+    host_feature_names = [
         'hostgal_snsep',
         'hostgal_ellipticity',
         'hostgal_sqradius',
@@ -23,6 +23,9 @@ class Elasticc2LaissFeatureExtractor(LaissFeatureExtractor):
         'hostgal_magerr_i',
         'hostgal_magerr_z',
         'hostgal_magerr_y',
+    ]
+
+    calculated_host_feature_name = [
         # 'g-r',
         # 'r-i',
         'i-z',
@@ -34,34 +37,55 @@ class Elasticc2LaissFeatureExtractor(LaissFeatureExtractor):
         '7DCD',
     ]
 
-    yet_more_feature_names = []
-
     id_column = "object_id"
     label_column = "sntype"
     non_anomaly_classes = ["Normal"] # i.e. "Normal", "Ia", ...
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-
+        # as a child of LaissFeatureExtractor, it has feature_names
+        self.filters = ['g', 'r']
+        self.num_features = len(self.filters)*len(Elasticc2LaissFeatureExtractor.feature_names) + len(Elasticc2LaissFeatureExtractor.other_feature_names) + len(Elasticc2LaissFeatureExtractor.other_feature_names)
+        
     @classmethod
     def get_metadata_header(cls) -> list[str]:
         return [cls.id_column, cls.label_column, ] # Add other metadata columns here
-    
 
-    def fit(self, band:str = None) -> np.ndarray:
 
-        # TOM has lightcurve extracted features and the host features
+    def get_features(self) -> list[str]:
+        return self._get_lc_features() + self._get_host_features()
 
-        # calculate additional features
+    def _get_lc_features(self) -> list[str]:
+        return self._get_features_per_filter(self.features, self.filters)
+
+    def _get_host_features(self) -> list[str]:
+        return Elasticc2LaissFeatureExtractor.host_feature_names + Elasticc2LaissFeatureExtractor.calculated_host_feature_name
+
+    def all_fit(self) -> np.ndarray:
+
+        laiss_features = ['None'] * self.num_features
+
+        # TOM has lightcurve extracted features
+        # TODO: figure out how those features will get here?
+            # current LightCurve class doesnt have a parameter for TOM features
+            # need self._get_features_per_filter(self.features, self.filters) from TOM
+
+
         #! TODO: construct a host_df with all the given host features from the TOM
-        
+        # host_df = pd.DataFrame(self.host_dict, index=[0])
+        # or
+        # host_df = pd.DataFrame({'hostgal_param1': self.hostgal_param1,
+        #                         'hostgal_param2': self.hostgal_param2,
+        #                         ...
+        #                         'hostgal_param3': self.hostgal_param3,}, index=[0])  
+
+        # calculate host additional features
         for f, g in zip('griz', 'rizy'):
             host_df[f'{f}-{g}'] = host_df[f'hostgal_mag_{f}'] - host_df[f'hostgal_mag_{g}']
         host_df = self._calc_7DCD(host_df)
+        host_features = np.array(host_df.iloc[0])
 
-        #! TODO: combine all lc and host features    
-        # return feature_array
-        pass
+        return laiss_features.extend(host_features)
 
 
     def _calc_7DCD(self, host_df):
