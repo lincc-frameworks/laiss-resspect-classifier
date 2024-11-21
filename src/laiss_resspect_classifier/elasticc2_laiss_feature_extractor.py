@@ -2,6 +2,7 @@ import numpy as np
 import importlib_resources
 import scipy.interpolate as scinterp
 from astropy.table import Table
+import pandas as pd
 
 from laiss_resspect_classifier.laiss_feature_extractor import LaissFeatureExtractor
 
@@ -69,17 +70,12 @@ class Elasticc2LaissFeatureExtractor(LaissFeatureExtractor):
         # TODO: figure out how those features will get here?
             # current LightCurve class doesnt have a parameter for TOM features
             # need self._get_features_per_filter(self.features, self.filters) from TOM
+        
 
+        host_d = {host_feature: self.additional_info[host_feature] for host_feature in Elasticc2LaissFeatureExtractor.host_feature_names}
+        host_df = pd.DataFrame(host_d, index=[0])  
 
-        #! TODO: construct a host_df with all the given host features from the TOM
-        # host_df = pd.DataFrame(self.host_dict, index=[0])
-        # or
-        # host_df = pd.DataFrame({'hostgal_param1': self.hostgal_param1,
-        #                         'hostgal_param2': self.hostgal_param2,
-        #                         ...
-        #                         'hostgal_param3': self.hostgal_param3,}, index=[0])  
-
-        # calculate host additional features
+        # calculate additional host features
         for f, g in zip('griz', 'rizy'):
             host_df[f'{f}-{g}'] = host_df[f'hostgal_mag_{f}'] - host_df[f'hostgal_mag_{g}']
         host_df = self._calc_7DCD(host_df)
