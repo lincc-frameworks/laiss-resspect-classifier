@@ -86,7 +86,7 @@ def get_detections(photometry, band):
     """Extract clean light curve in given band from locus photometry"""
     # band_lc = photometry[(photometry['ant_passband'] == band) & (~photometry['ant_mag'].isna())]
     # idx = ~MaskedColumn(band_lc['ant_mag']).mask
-    band_lc = photometry[(photometry['filtername'] == band) & (~photometry['mag'].isna())]
+    band_lc = photometry[(photometry['band'] == band) & (~photometry['mag'].isna())]
     idx = ~MaskedColumn(band_lc['mag']).mask
     detections = remove_simultaneous_alerts(band_lc[idx])
     return detections
