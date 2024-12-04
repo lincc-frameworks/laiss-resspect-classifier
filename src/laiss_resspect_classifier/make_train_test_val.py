@@ -25,9 +25,8 @@ additional_info = [
 
 url = os.environ.get('TOM_URL', "https://desc-tom-2.lbl.gov")
 
-#! TODO - remove these hardcoded values
-username = os.environ.get('TOM_USERNAME', 'awoldag')
-passwordfile = os.environ.get('TOM_PASSWORDFILE', '/Users/drew/code/password.txt')
+username = os.environ.get('TOM_USERNAME', 'USER')
+passwordfile = os.environ.get('TOM_PASSWORDFILE', 'FILEPATH')
 
 def get_phot(obj_df):
 
