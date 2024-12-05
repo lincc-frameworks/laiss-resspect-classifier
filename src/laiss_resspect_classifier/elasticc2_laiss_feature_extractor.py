@@ -48,7 +48,7 @@ class Elasticc2LaissFeatureExtractor(LaissFeatureExtractor):
         self.num_features = len(self.filters)*len(Elasticc2LaissFeatureExtractor.feature_names) + len(Elasticc2LaissFeatureExtractor.other_feature_names) + len(Elasticc2LaissFeatureExtractor.other_feature_names)
         
     @classmethod
-    def get_metadata_header(cls) -> list[str]:
+    def get_metadata_header(cls, **kwargs) -> list[str]:
         return [cls.id_column, "redshift", cls.label_column, "sncode", "sample"]
 
     @classmethod
@@ -75,6 +75,8 @@ class Elasticc2LaissFeatureExtractor(LaissFeatureExtractor):
         laiss_features = ['None'] * self.num_features
 
         lightcurve = self.photometry
+        lightcurve['mag'] = -2.5*np.log10(lightcurve['flux']) + 27.5
+        lightcurve['magerr'] = 2.5/np.log(10) * lightcurve['fluxerr']/lightcurve['flux']
         min_obs_count = 4
         _, property_names, _ = create_base_features_class(MAGN_EXTRACTOR, FLUX_EXTRACTOR)
 
@@ -87,7 +89,7 @@ class Elasticc2LaissFeatureExtractor(LaissFeatureExtractor):
                 print(f"Not enough obs for {self.id}. pass!\n")
                 return
 
-            # extract lc features        
+            # extract lc features
             t = np.array(detections['mjd'])
             m = np.array(detections['mag'], dtype=np.float64)
             merr = np.array(detections['magerr'], dtype=np.float64)
