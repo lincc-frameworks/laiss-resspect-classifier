@@ -39,7 +39,7 @@ class Elasticc2LaissFeatureExtractor(LaissFeatureExtractor):
 
     id_column = "objectid"
     label_column = "sntype"
-    non_anomaly_classes = ["Normal"] # i.e. "Normal", "Ia", ...
+    non_anomaly_classes = ["Normal", "Ia"] # i.e. "Normal", "Ia", ...
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
